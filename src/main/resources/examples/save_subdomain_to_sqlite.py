@@ -37,15 +37,9 @@ def save_to_file():
 
     # for requestResponse in history(lambda requestResponse: requestResponse.finalRequest().httpService().host().endswith(".example.com")):
     for requestResponse in history():
-        if requestResponse.finalRequest().httpService().host().endswith(".vivo.com.cn"):
+        if requestResponse.finalRequest().httpService().host().endswith(".example.com"):
             file.write(requestResponse.finalRequest().httpService().toString() + "\n")
     file.close()
-
-
-# def unloading():
-#     # Save data when the extension is unloaded or exit burp suite.
-#     save_to_file()
-#     save_to_sqlite()
 
 
 print(history().size())

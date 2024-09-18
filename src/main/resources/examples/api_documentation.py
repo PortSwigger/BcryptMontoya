@@ -7,11 +7,10 @@
     pool.run(function, *args, **kwargs)
     pool.shutdown()
     
-    # Grpc
-    server = Grpc("localhost", 30051)
+    # rpc
+    server = rpc("localhost", 30051)
     server.callFunc('remoteFuncName', *args)
     server.shutdown()
-
 
 """
     INSTANCE OF CLASS
@@ -38,6 +37,10 @@
     # https://portswigger.github.io/burp-extensions-montoya-api/javadoc/burp/api/montoya/ui/contextmenu/MessageEditorHttpRequestResponse.html
     # Only provide for message editor context menu.
     MessageEditorHttpRequestResponse MessageEditor
+
+
+    # https://portswigger.github.io/burp-extensions-montoya-api/javadoc/burp/api/montoya/collaborator/Interaction.html
+    Interaction interaction
 
 
     # Decorator
@@ -105,13 +108,15 @@
     getSelectedText(MessageEditor: MessageEditorHttpRequestResponse) -> ByteArray
     replaceSelectedText(MessageEditor: MessageEditorHttpRequestResponse, newText: str) -> HTTPRequest
 
+    # Generate new Burp Collaborator payloads.
+    getOOBCanary()
 
 """
     
-              handleProxyRequest                         handleRequest
-     client   -----------------------> BurpSuit proxy ----------------------->  server
+              handleProxyRequest                          handleRequest
+     client   ----------------------->    BurpSuit    ----------------------->  server
               <-----------------------                <-----------------------
-              handleProxyResponse                        handleResponse
+              handleProxyResponse                         handleResponse
 
 """
 
@@ -188,7 +193,7 @@ def passiveScan(baseRequestResponse):
     Note: Extensions should only analyze the HTTP messages provided during a passive audit, and should not make any new HTTP requests of their own.
 
     :param (HttpRequestResponse) baseRequestResponse: A coupling of HttpRequest and HttpResponse.
-    :return:
+    :return (AuditResult):
     """
     pass
 
@@ -201,6 +206,16 @@ def activeScan(baseRequestResponse, auditInsertionPoint):
 
     :param (HttpRequestResponse) baseRequestResponse: A coupling of HttpRequest and HttpResponse.
     :param (AuditInsertionPoint) auditInsertionPoint: Define an insertion point for use by active Scan checks
+    :return (AuditResult):
+    """
+    pass
+
+
+def handleInteraction(interaction):
+    """
+    Provides details of an interaction with the Burp Collaborator server.
+
+    :param (Interaction) interaction:
     :return:
     """
     pass
@@ -214,11 +229,3 @@ def finish():
     """
     pass
 
-
-def uploading():
-    """
-    This method is invoked when the extension is unloaded.
-
-    :return:
-    """
-    pass

@@ -1,4 +1,4 @@
-package io.github.cyal1.bcryptmontoya;
+package io.github.cyal1.pyburp;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -25,10 +25,9 @@ public class ContentTypeConverter {
     public ContentTypeConverter() {
         context = Context.enter();
         scope = context.initStandardObjects();
-        String jsCode = BcryptMontoyaUI.readFromInputStream(BcryptMontoya.class.getResourceAsStream("/qs.js"));
+        String jsCode = Tools.readFromInputStream(PyBurp.class.getResourceAsStream("/qs.js"));
         context.evaluateString(scope, jsCode, "JavaScript", 1, null);
     }
-
     public String queryString2JSON(String qs){
         String functionName = "convert2JSON";
         Object[] functionArgs = {qs};
@@ -37,9 +36,8 @@ public class ContentTypeConverter {
     }
     public String json2QueryString(String jsonString){
         String functionName = "convert2qs";
-        jsonString = jsonString.replace("'", "\\'");
         Context context1 = Context.enter();
-        Object jsonResult = context1.evaluateString(scope, "JSON.parse('" + jsonString + "')", "JavaScript", 1, null);
+        Object jsonResult = context1.evaluateString(scope, "JSON.parse(" + JSONObject.quote(jsonString) + ")", "JavaScript", 1, null);
         context1.close();
         Object[] functionArgs = {jsonResult};
         Object result = ScriptableObject.callMethod(scope, functionName, functionArgs);
@@ -47,6 +45,7 @@ public class ContentTypeConverter {
     }
     public String json2XML(String jsonString) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         StringBuilder xml = new StringBuilder();
         xml.append("<root>");
         Object item = new JSONTokener(jsonString).nextValue();

@@ -11,25 +11,36 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'net.portswigger.burp.extensions:montoya-api:2023.9'
+    compileOnly 'net.portswigger.burp.extensions:montoya-api:2024.7'
 //    compileOnly files('/Users/test/Downloads/montoya-api-2023.9.jar')
     implementation 'org.mozilla:rhino:1.7.14'
-    implementation 'org.json:json:20230227'
-    implementation 'com.fifesoft:rsyntaxtextarea:3.3.3'
-    implementation 'org.python:jython-standalone:2.7.3'
-    runtimeOnly 'io.grpc:grpc-netty-shaded:1.54.1'
-    implementation 'io.grpc:grpc-protobuf:1.54.1'
-    implementation 'io.grpc:grpc-stub:1.54.1'
-    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
+    implementation 'org.json:json:20231013'
+    implementation 'com.fifesoft:rsyntaxtextarea:3.5.1'
+    implementation 'org.python:jython-standalone:2.7.1'
+//    runtimeOnly 'io.grpc:grpc-netty-shaded:1.66.0'
+    implementation 'io.grpc:grpc-okhttp:1.66.0'
+    implementation 'io.grpc:grpc-protobuf:1.66.0'
+    implementation 'io.grpc:grpc-stub:1.66.0'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.41.2.2'
+    implementation "com.github.kklisura.cdt:cdt-java-client:4.0.0"
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    exclude '**/org/sqlite/native/FreeBSD/**'
+    exclude '**/org/sqlite/native/Linux-Android/**'
+    exclude '**/org/sqlite/native/Linux-Musl/**'
+    exclude '**/org/sqlite/native/Linux/ppc64/**'
+    exclude '**/org/sqlite/native/Linux/riscv64/**'
+    exclude '**/org/sqlite/native/Windows/x86/**'
 }
+
+
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
+
